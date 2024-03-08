@@ -1,0 +1,9 @@
+dynamixel_driver:
+  ros__parameters:
+    port: /dev/ttyUSB0
+    baudrate: 57600
+    servos:
+      - frame_id: actuator_link
+        device_id: 7
+        gain: 200
+        delta: 20
