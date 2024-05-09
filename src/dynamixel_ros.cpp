@@ -17,6 +17,7 @@ DynamixelRos::DynamixelRos() :
 void DynamixelRos::initialize()
 {
     dynamixel_ctrl_ = std::make_shared<DynamixelCtrl>();
+
     dynamixel_ctrl_->init(
         port_config_.port,
         port_config_.baudrate
@@ -120,7 +121,7 @@ void DynamixelServoRos::timer_callback()
     float diff = desired_angle_ - servo_->getPresentState().position + servo_config_.offset;
 
     float v = atan2(sin(diff), cos(diff));
-    auto gain = rate_gain_ * v / (fabs(v) + saturation_gain_);
+    auto gain = servo_config_.gain * v / (fabs(v) + servo_config_.delta);
 
     servo_->setGoalVelocity(gain);
 
