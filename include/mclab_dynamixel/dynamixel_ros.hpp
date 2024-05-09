@@ -17,11 +17,28 @@ struct PortParameter
     int baudrate;
 };
 
+struct ServoConfig {
+    std::string name;
+    std::string frame_id;
+    std::string control_topic;
+    int device_id;
+    float gain;
+    float delta;
+    float offset;
+};
+
 class DynamixelServoRos;
 
 class DynamixelRos : public rclcpp::Node
 {
+private:
+    void f_param_digest();
 
+    void f_initialize_servos();
+
+    std::vector<ServoConfig> servo_configs_;
+
+    std::vector<std::shared_ptr<DynamixelServoRos>> servos_;
 
 protected:
 
@@ -36,7 +53,6 @@ protected:
     void declare_parameters();
 
     void update_parameters();
-
 
     rclcpp::executors::StaticSingleThreadedExecutor executor_;
 
@@ -74,6 +90,8 @@ private:
 
     std::shared_ptr<ServoCtrl> servo_;
 
+    ServoConfig servo_config_;
+
     void timer_callback();
 
     void angle_callback(const std_msgs::msg::Float32::SharedPtr msg);
@@ -82,5 +100,7 @@ private:
 
     void update_parameters();
 public:
-    DynamixelServoRos(std::shared_ptr<ServoCtrl> servo, std::string name);
+
+    DynamixelServoRos(ServoConfig servo_config, std::shared_ptr<DynamixelCtrl> ctrl_interface);
+
 };

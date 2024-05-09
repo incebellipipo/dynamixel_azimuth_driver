@@ -1,9 +1,20 @@
 dynamixel_driver:
   ros__parameters:
-    port: /dev/ttyUSB0
-    baudrate: 57600
+    hardware:
+      port: /dev/ttyUSB0
+      baudrate: 57600
     servos:
-      - frame_id: actuator_link
+      port_azimuth:
+        frame_id: port_azimuth_link
+        control_topic: /servo/1/angle
         device_id: 7
         gain: 200
         delta: 20
+        offset: 0.0
+      starboard_azimuth:
+        frame_id: starboard_azimuth_link
+        control_topic: /servo/2/angle
+        device_id: 2
+        gain: 200
+        delta: 20
+        offset: 0.0
