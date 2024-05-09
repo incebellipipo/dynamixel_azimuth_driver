@@ -11,7 +11,7 @@
 
 #include "mclab_dynamixel/dynamixel_ctrl.hpp"
 
-struct PortParameter
+struct PortConfig
 {
     std::string port;
     int baudrate;
@@ -36,6 +36,8 @@ private:
 
     void f_initialize_servos();
 
+    PortConfig port_config_;
+
     std::vector<ServoConfig> servo_configs_;
 
     std::vector<std::shared_ptr<DynamixelServoRos>> servos_;
@@ -44,11 +46,6 @@ protected:
 
     std::shared_ptr<DynamixelCtrl> dynamixel_ctrl_;
 
-    rclcpp::TimerBase::SharedPtr timer_;
-
-    void timer_callback();
-
-    PortParameter port_param_;
 
     void declare_parameters();
 
@@ -64,19 +61,15 @@ public:
      */
     DynamixelRos();
 
-    // return the executor
-    auto get_executor() -> decltype(executor_)& {
-        return executor_;
-    }
+    void initialize();
 
-    std::vector<std::shared_ptr<DynamixelServoRos>> servo_ros;
-
-    void run();
 };
 
-class DynamixelServoRos : public rclcpp::Node
+class DynamixelServoRos
 {
 private:
+
+    rclcpp::Node::SharedPtr node_;
 
     float rate_gain_;
 
@@ -96,11 +89,9 @@ private:
 
     void angle_callback(const std_msgs::msg::Float32::SharedPtr msg);
 
-    void declare_parameters();
-
     void update_parameters();
 public:
 
-    DynamixelServoRos(ServoConfig servo_config, std::shared_ptr<DynamixelCtrl> ctrl_interface);
+    DynamixelServoRos(rclcpp::Node::SharedPtr node, ServoConfig servo_config, std::shared_ptr<DynamixelCtrl> ctrl_interface);
 
 };

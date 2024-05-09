@@ -5,59 +5,38 @@
 using namespace std::chrono_literals;
 
 
-DynamixelRos::DynamixelRos() : Node("dynamixel_ros")
+DynamixelRos::DynamixelRos() :
+    Node("dynamixel_ros",
+        rclcpp::NodeOptions()
+            .allow_undeclared_parameters(true)
+            .automatically_declare_parameters_from_overrides(true))
 {
-    this->declare_parameters();
-
     this->f_param_digest();
+}
 
+void DynamixelRos::initialize()
+{
     dynamixel_ctrl_ = std::make_shared<DynamixelCtrl>();
     dynamixel_ctrl_->init(
-        port_param_.port,
-        port_param_.baudrate
+        port_config_.port,
+        port_config_.baudrate
     );
 
     dynamixel_ctrl_->scanDevices();
 
-    // for(auto id : dynamixel_ctrl_->getDeviceList()) {
-    //     std::cout << "Found servo with id: " << (int)id << std::endl;
-    //     auto servo = std::make_shared<DynamixelServoRos>(
-    //         std::make_shared<ServoCtrl>(id, dynamixel_ctrl_), "servo_" + std::to_string(id));
-    //     servo_ros.push_back(servo);
-    // }
 
     this->f_initialize_servos();
 
-    timer_ = this->create_wall_timer(
-        20ms, std::bind(&DynamixelRos::timer_callback, this));
-
-
 
 }
 
-// implement the timer
-void DynamixelRos::timer_callback()
-{
 
-}
-
-void DynamixelRos::run()
-{
-    executor_.spin();
-}
-
-
-void DynamixelRos::declare_parameters()
-{
-    this->declare_parameter("hardware.port", "/dev/ttyUSB0");
-    this->declare_parameter("hardware.baudrate", 57600);
-}
 
 void DynamixelRos::f_param_digest() {
     std::cout << "reading the parameters" << std::endl;
 
-    this->get_parameter("hardware.port", port_param_.port);
-    this->get_parameter("hardware.baudrate", port_param_.baudrate);
+    this->get_parameter("hardware.port", port_config_.port);
+    this->get_parameter("hardware.baudrate", port_config_.baudrate);
 
     std::map<std::string, rclcpp::Parameter> parameter_map;
 
@@ -108,24 +87,24 @@ void DynamixelRos::f_initialize_servos()
             continue;
         }
 
-        auto servo = std::make_shared<DynamixelServoRos>(servo_config, dynamixel_ctrl_);
-        servo_ros.push_back(servo);
+        auto servo = std::make_shared<DynamixelServoRos>(shared_from_this() ,servo_config, dynamixel_ctrl_);
+
+        servos_.push_back(servo);
     }
 
 }
 
-DynamixelServoRos::DynamixelServoRos(ServoConfig config, std::shared_ptr<DynamixelCtrl> ctrl_interface)
-    : Node("dynamixel_" + config.name), servo_config_(config)
+DynamixelServoRos::DynamixelServoRos(std::shared_ptr<rclcpp::Node> node, ServoConfig config, std::shared_ptr<DynamixelCtrl> ctrl_interface)
+    : node_(node), servo_config_(config)
 {
-    this->declare_parameters();
     this->update_parameters();
 
     servo_ = std::make_shared<ServoCtrl>(servo_config_.device_id, ctrl_interface);
 
-    timer_ = this->create_wall_timer(
+    timer_ = node_->create_wall_timer(
         20ms, std::bind(&DynamixelServoRos::timer_callback, this));
 
-    subscriber_ = this->create_subscription<std_msgs::msg::Float32>(
+    subscriber_ = node_->create_subscription<std_msgs::msg::Float32>(
         servo_config_.control_topic, 10, std::bind(&DynamixelServoRos::angle_callback, this, std::placeholders::_1));
 
     servo_->ping();
@@ -151,14 +130,13 @@ void DynamixelServoRos::angle_callback(const std_msgs::msg::Float32::SharedPtr m
 {
     desired_angle_ = msg->data;
 }
-void DynamixelServoRos::declare_parameters()
-{
-    this->declare_parameter("rate", 10.0);
-    this->declare_parameter("saturation", 10.0);
-}
+
 
 void DynamixelServoRos::update_parameters()
 {
-    rate_gain_ = this->get_parameter("rate").as_double();
-    saturation_gain_ = this->get_parameter("saturation").as_double();
+
+    node_->get_parameter_or<float>("servos." + servo_config_.name + ".gain", servo_config_.gain, 1.0);
+    node_->get_parameter_or<float>("servos." + servo_config_.name + ".delta", servo_config_.delta, 0.1);
+    node_->get_parameter_or<float>("servos." + servo_config_.name + ".offset", servo_config_.offset, 0.0);
+
 }

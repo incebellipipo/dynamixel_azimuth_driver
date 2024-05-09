@@ -18,8 +18,8 @@ def generate_launch_description():
 
     node_dynamixel_control = launch_ros.actions.Node(
         package='mclab_dynamixel',
-        executable='dynamixel_ctrl_node',
-        name='dynamixel_ctrl_node',
+        executable='dynamixel_node',
+        name='dynamixel_node',
         parameters=[config_dynamixel_control],
         output='screen'
     )
