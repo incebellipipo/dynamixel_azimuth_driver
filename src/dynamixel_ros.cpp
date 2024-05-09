@@ -53,6 +53,7 @@ void DynamixelRos::f_param_digest() {
 
         ServoConfig servo_config;
 
+        servo_config.name = servo_name;
         this->get_parameter_or<std::string>("servos." + servo_name + ".frame_id", servo_config.frame_id, std::string("servo_" + servo_name + "_link"));
         this->get_parameter_or<std::string>("servos." + servo_name + ".control_topic", servo_config.control_topic, std::string("servo_" + servo_name + "/control"));
         this->get_parameter_or<int>("servos." + servo_name + ".device_id", servo_config.device_id, -1);
