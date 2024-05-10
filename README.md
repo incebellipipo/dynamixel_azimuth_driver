@@ -1,1 +1,26 @@
 # dynamixel_azimuth_driver
+
+## Example configuration
+
+```yaml
+dynamixel_driver:
+  ros__parameters:
+    hardware:
+      port: /dev/ttyUSB0
+      baudrate: 57600
+    servos:
+      port_azimuth:
+        frame_id: port_azimuth_link
+        control_topic: /port_azimuth/angle
+        device_id: 7
+        gain: 200.0
+        delta: 20.0
+        offset: 0.0
+      starboard_azimuth:
+        frame_id: starboard_azimuth_link
+        control_topic: /starboard_azimuth/angle
+        device_id: 2
+        gain: 200.0
+        delta: 20.0
+        offset: 0.0
+```

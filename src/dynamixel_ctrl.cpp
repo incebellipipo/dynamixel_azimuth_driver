@@ -1,4 +1,4 @@
-#include "mclab_dynamixel/dynamixel_ctrl.hpp"
+#include "dynamixel_servo/dynamixel_ctrl.hpp"
 
 #include "dynamixel_workbench_toolbox/dynamixel_workbench.h"
 

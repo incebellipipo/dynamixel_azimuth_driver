@@ -1,4 +1,4 @@
-#include "mclab_dynamixel/dynamixel_ros.hpp"
+#include "dynamixel_servo/dynamixel_ros.hpp"
 
 int main(int argc, char *argv[]) {
     rclcpp::init(argc, argv);

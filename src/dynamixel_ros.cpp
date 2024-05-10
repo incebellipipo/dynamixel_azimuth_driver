@@ -1,4 +1,4 @@
-#include "mclab_dynamixel/dynamixel_ros.hpp"
+#include "dynamixel_servo/dynamixel_ros.hpp"
 #include "rclcpp/executor.hpp"
 
 #include "cmath"
@@ -25,6 +25,9 @@ void DynamixelRos::initialize()
 
     dynamixel_ctrl_->scanDevices();
 
+    for(auto i : dynamixel_ctrl_->getDeviceList()){
+        RCLCPP_INFO_STREAM(this->get_logger(), "Found device with id: " << i);
+    }
 
     this->f_initialize_servos();
 

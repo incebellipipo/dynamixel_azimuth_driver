@@ -9,7 +9,7 @@
 #include "std_msgs/msg/string.hpp"
 #include "std_msgs/msg/float32.hpp"
 
-#include "mclab_dynamixel/dynamixel_ctrl.hpp"
+#include "dynamixel_servo/dynamixel_ctrl.hpp"
 
 struct PortConfig
 {
@@ -46,19 +46,12 @@ protected:
 
     std::shared_ptr<DynamixelCtrl> dynamixel_ctrl_;
 
-
     void declare_parameters();
 
     void update_parameters();
 
-    rclcpp::executors::StaticSingleThreadedExecutor executor_;
-
 public:
-    /**
-     * @brief Construct a new Minimal Publisher object
-     *
-     * The constructor initializes the publisher and timer.
-     */
+
     DynamixelRos();
 
     void initialize();

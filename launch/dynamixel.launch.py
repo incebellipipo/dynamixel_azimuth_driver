@@ -11,13 +11,13 @@ from ament_index_python.packages import get_package_share_directory
 def generate_launch_description():
 
     config_dynamixel_control = os.path.join(
-        get_package_share_directory('mclab_dynamixel'),
+        get_package_share_directory('dynamixel_servo_ros'),
         'param',
         'config.yaml'
     )
 
     node_dynamixel_control = launch_ros.actions.Node(
-        package='mclab_dynamixel',
+        package='dynamixel_servo_ros',
         executable='dynamixel_node',
         name='dynamixel_node',
         parameters=[config_dynamixel_control],
