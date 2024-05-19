@@ -107,10 +107,10 @@ DynamixelServoRos::DynamixelServoRos(std::shared_ptr<rclcpp::Node> node, ServoCo
     servo_ = std::make_shared<ServoCtrl>(servo_config_.device_id, ctrl_interface);
 
     timer_ = node_->create_wall_timer(
-        20ms, std::bind(&DynamixelServoRos::timer_callback, this));
+        50ms, std::bind(&DynamixelServoRos::timer_callback, this));
 
     subscriber_ = node_->create_subscription<std_msgs::msg::Float32>(
-        servo_config_.control_topic, 10, std::bind(&DynamixelServoRos::angle_callback, this, std::placeholders::_1));
+        servo_config_.control_topic, 1, std::bind(&DynamixelServoRos::angle_callback, this, std::placeholders::_1));
 
     servo_->ping();
     servo_->init();
