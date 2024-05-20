@@ -53,16 +53,6 @@ private:
 
     servo_state_t present_state_;
 
-    void getPresentPosition();
-
-    void getPresentVelocity();
-
-    void getPresentLoad();
-
-    void getPresentVoltage();
-
-    void getPresentTemperature();
-
 
 public:
 
@@ -73,6 +63,16 @@ public:
     void enable();
 
     void update();
+
+    void getPresentPosition();
+
+    void getPresentVelocity();
+
+    void getPresentLoad();
+
+    void getPresentVoltage();
+
+    void getPresentTemperature();
 
     auto getPresentState() -> decltype(present_state_);
 

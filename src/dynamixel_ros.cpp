@@ -107,7 +107,7 @@ DynamixelServoRos::DynamixelServoRos(std::shared_ptr<rclcpp::Node> node, ServoCo
     servo_ = std::make_shared<ServoCtrl>(servo_config_.device_id, ctrl_interface);
 
     timer_ = node_->create_wall_timer(
-        50ms, std::bind(&DynamixelServoRos::timer_callback, this));
+        75ms, std::bind(&DynamixelServoRos::timer_callback, this));
 
     subscriber_ = node_->create_subscription<std_msgs::msg::Float32>(
         servo_config_.control_topic, 1, std::bind(&DynamixelServoRos::angle_callback, this, std::placeholders::_1));
@@ -119,7 +119,7 @@ DynamixelServoRos::DynamixelServoRos(std::shared_ptr<rclcpp::Node> node, ServoCo
 
 void DynamixelServoRos::timer_callback()
 {
-    servo_->update();
+    servo_->getPresentPosition();
     update_parameters();
 
     float diff = desired_angle_ - servo_->getPresentState().position + servo_config_.offset;
