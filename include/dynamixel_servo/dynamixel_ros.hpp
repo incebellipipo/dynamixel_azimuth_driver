@@ -34,13 +34,18 @@ class DynamixelRos : public rclcpp::Node
 private:
     void f_param_digest();
 
+
     void f_initialize_servos();
 
     PortConfig port_config_;
 
-    std::vector<ServoConfig> servo_configs_;
+    std::vector<std::shared_ptr<ServoConfig>> servo_configs_;
 
     std::vector<std::shared_ptr<DynamixelServoRos>> servos_;
+
+    std::shared_ptr<rclcpp::ParameterEventHandler> param_subscriber_;
+
+    std::shared_ptr<rclcpp::ParameterCallbackHandle> param_callback_;
 
 protected:
 
@@ -76,7 +81,14 @@ private:
 
     std::shared_ptr<ServoCtrl> servo_;
 
-    ServoConfig servo_config_;
+    std::shared_ptr<ServoConfig> servo_config_;
+
+    std::shared_ptr<rclcpp::ParameterEventHandler> param_subscriber_;
+
+    std::shared_ptr<rclcpp::ParameterCallbackHandle> param_callback_;
+
+    template <typename T>
+    void f_param_callback(const rclcpp::Parameter& parameter, T* value);
 
     void timer_callback();
 
@@ -85,6 +97,6 @@ private:
     void update_parameters();
 public:
 
-    DynamixelServoRos(rclcpp::Node::SharedPtr node, ServoConfig servo_config, std::shared_ptr<DynamixelCtrl> ctrl_interface);
+    DynamixelServoRos(rclcpp::Node::SharedPtr node, std::shared_ptr<ServoConfig> servo_config, std::shared_ptr<DynamixelCtrl> ctrl_interface);
 
 };
