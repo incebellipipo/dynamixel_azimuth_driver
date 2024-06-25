@@ -16,7 +16,7 @@ void DynamixelCtrl::init(std::string port, int baudrate) {
     const char* log;
     auto result = dxl_wb_->init(port.c_str(), baudrate, &log);
     if (result == false) {
-        std::cerr << log << std::endl;
+        std::cerr << log << " port: " << port << ", baud: " << baudrate << std::endl;
     }
     dxl_wb_->begin();
 }
