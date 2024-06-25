@@ -43,10 +43,6 @@ private:
 
     std::vector<std::shared_ptr<DynamixelServoRos>> servos_;
 
-    std::shared_ptr<rclcpp::ParameterEventHandler> param_subscriber_;
-
-    std::shared_ptr<rclcpp::ParameterCallbackHandle> param_callback_;
-
 protected:
 
     std::shared_ptr<DynamixelCtrl> dynamixel_ctrl_;
@@ -87,6 +83,8 @@ private:
 
     std::shared_ptr<rclcpp::ParameterCallbackHandle> param_callback_;
 
+    std::vector<rclcpp::ParameterCallbackHandle::SharedPtr> param_callback_handlers_;
+
     template <typename T>
     void f_param_callback(const rclcpp::Parameter& parameter, T* value);
 
@@ -94,7 +92,7 @@ private:
 
     void angle_callback(const std_msgs::msg::Float32::SharedPtr msg);
 
-    void update_parameters();
+    void setup_parameters();
 public:
 
     DynamixelServoRos(rclcpp::Node::SharedPtr node, std::shared_ptr<ServoConfig> servo_config, std::shared_ptr<DynamixelCtrl> ctrl_interface);
