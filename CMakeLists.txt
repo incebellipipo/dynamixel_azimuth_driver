@@ -47,6 +47,17 @@ target_link_libraries(dynamixel_node
   dynamixel_ros
 )
 
+
+add_executable(list_devices
+  nodes/list_devices.cpp)
+ament_target_dependencies(list_devices
+  dynamixel_sdk
+  dynamixel_workbench_toolbox
+)
+target_link_libraries(list_devices
+  dynamixel_ros
+)
+
 install(
   DIRECTORY
     launch
